@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QHBoxLayout, QVBoxLayout, 
-                             QPushButton, QFileDialog, QProgressBar, QLabel, QSplitter)
+QPushButton, QFileDialog, QProgressBar, QLabel, QSplitter)
 from PyQt6.QtCore import Qt
 from .components.file_list import FileListTable
 from .components.settings_panel import SettingsPanel

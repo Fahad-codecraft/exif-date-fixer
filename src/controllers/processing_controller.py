@@ -38,7 +38,7 @@ class ProcessingController:
         proposed = None
 
         if rules.get("manual_date"):
-            proposed = rules["manual_date"]
+            proposed = rules["manual_date"].replace(microsecond=0)
 
         elif rules.get("use_exif") and file_meta.exif_date_taken:
             proposed = file_meta.exif_date_taken
@@ -81,6 +81,7 @@ class ProcessingController:
         if success:
             file_meta.status = "Processed"
             file_meta.message = f"Date set to {file_meta.proposed_date}"
+            file_meta.exif_date_taken = file_meta.proposed_date
         else:
             file_meta.status = "Error"
             file_meta.message = "Failed to update metadata"

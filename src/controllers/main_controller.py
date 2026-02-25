@@ -40,9 +40,17 @@ class MainController:
         self.view.status_label.setText(f"Loaded {len(self.files_metadata)} files")
 
     def clear_list(self):
-        self.files_metadata = []
-        self.view.file_table.clear_all()
-        self.view.status_label.setText("Ready")
+    # ── Ask to clear after processing ──
+        clear_reply = QMessageBox.question(
+            self.view, 'Clear List',
+            "Processing complete. Do you want to clear the file list?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+
+        if clear_reply == QMessageBox.StandardButton.Yes:
+            self.files_metadata = []
+            self.view.file_table.clear_all()
+            self.view.status_label.setText("Ready")
 
     def preview_changes(self):
         rules = self.view.settings_panel.get_settings()
@@ -73,5 +81,6 @@ class MainController:
                 self.view.progress_bar.setValue(i + 1)
                 
             self.view.status_label.setText(f"Processed {processed_count} files successfully")
-            QMessageBox.information(self.view, "Complete", f"Successfully processed {processed_count} files.")
             self.view.progress_bar.setVisible(False)
+
+            QMessageBox.information(self.view, "Complete", f"Successfully processed {processed_count} files.")

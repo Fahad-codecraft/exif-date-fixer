@@ -87,4 +87,32 @@ QStatusBar {
     background-color: #f2f2f7;
     color: #8e8e93;
 }
+
+QMessageBox {
+    background-color: #f5f5f7;
+}
+
+QMessageBox QLabel {
+    color: #333;
+    font-size: 13px;
+}
+
+QMessageBox QPushButton {
+    background-color: #007aff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 20px;
+    font-weight: 600;
+    min-width: 80px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #0063cc;
+}
+
+QMessageBox QPushButton:pressed {
+    background-color: #0051a8;
+}
+
 """

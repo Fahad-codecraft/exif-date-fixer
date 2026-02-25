@@ -16,7 +16,7 @@ class FileListTable(QTableWidget):
         self.setColumnCount(6)
         self.setHorizontalHeaderLabels([
             "Filename",
-            "Original Date",
+            "Current media Date",
             "Detected Date",
             "Proposed Date",
             "Status",
@@ -62,7 +62,7 @@ class FileListTable(QTableWidget):
             filename_item.setData(Qt.ItemDataRole.UserRole, file_meta.path)
         self.setItem(row, 0, filename_item)
 
-        orig_date = file_meta.exif_date_taken
+        orig_date = file_meta.file_system_modified # or file_meta.exif_date_taken
         orig_date = self._safe_datetime(orig_date) if orig_date else "None"
         self.setItem(row, 1, QTableWidgetItem(str(orig_date)))
 
@@ -118,6 +118,11 @@ class FileListTable(QTableWidget):
     def update_row(self, row, file_meta):
         if 0 <= row < self.rowCount():
 
+            # If file was successfully processed, reflect the new date in Original Date
+            if file_meta.status == "Processed" and file_meta.proposed_date:
+                new_orig = self._safe_datetime(file_meta.proposed_date)
+                self.setItem(row, 1, QTableWidgetItem(str(new_orig)))
+
             # Normalize proposed date
             prop_date = file_meta.proposed_date
             prop_date = (
@@ -125,16 +130,8 @@ class FileListTable(QTableWidget):
                 if prop_date else "Pending"
             )
 
-            self.setItem(
-                row, 3,
-                QTableWidgetItem(str(prop_date))
-            )
-
-            self.setItem(
-                row, 4,
-                QTableWidgetItem(file_meta.status)
-            )
-
+            self.setItem(row, 3, QTableWidgetItem(str(prop_date)))
+            self.setItem(row, 4, QTableWidgetItem(file_meta.status))
     # ---------------------------------
     # Handle delete button click
     # ---------------------------------

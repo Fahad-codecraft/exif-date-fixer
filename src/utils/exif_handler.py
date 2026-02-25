@@ -113,8 +113,9 @@ class ExifHandler:
             if ext in [".jpg", ".jpeg"]:
                 exif = piexif.load(file_path)
 
+                exif["Exif"][piexif.ExifIFD.DateTimeOriginal] = date_str.encode()
                 exif["Exif"][piexif.ExifIFD.DateTimeDigitized] = date_str.encode()
-                exif["0th"][piexif.ImageIFD.DateTime] = date_str.encode()
+                # exif["0th"][piexif.ImageIFD.DateTime] = date_str.encode()
 
                 piexif.insert(piexif.dump(exif), file_path)
 
