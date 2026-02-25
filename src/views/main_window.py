@@ -11,7 +11,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("EXIF Date Fixer")
-        self.resize(1100, 700)
+        self.resize(1200, 800)
         self.setStyleSheet(MODERN_STYLE)
         
         central_widget = QWidget()

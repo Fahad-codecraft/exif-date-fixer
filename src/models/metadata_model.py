@@ -19,6 +19,7 @@ class FileMetadata:
     
     # Proposed/New metadata
     proposed_date: Optional[datetime] = None
+    proposed_filename: Optional[str] = None
     status: str = "Pending" # Pending, Processed, Error, Skipped
     message: str = ""
 

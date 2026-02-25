@@ -76,11 +76,42 @@ QProgressBar::chunk {
     border-radius: 3px;
 }
 
-QLineEdit, QComboBox, QDateTimeEdit {
+QLineEdit, QDateTimeEdit {
     border: 1px solid #d1d1d6;
-    border-radius: 4px;
-    padding: 4px;
+    border-radius: 6px;
+    padding: 6px;
     background-color: white;
+    color: #333;
+}
+
+/* ComboBox */
+QComboBox {
+    border: 1px solid #d1d1d6;
+    border-radius: 6px;
+    padding: 6px;
+    background-color: white;
+    color: #333;
+}
+
+QComboBox:hover {
+    border: 1px solid #007aff;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+QComboBox::down-arrow {
+    image: none;
+}
+
+QComboBox QAbstractItemView {
+    background-color: white;
+    border: 1px solid #d1d1d6;
+    selection-background-color: #007aff;
+    selection-color: white;
+    color: #333;
 }
 
 QStatusBar {

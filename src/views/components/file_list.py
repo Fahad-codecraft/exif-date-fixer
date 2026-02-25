@@ -13,12 +13,13 @@ class FileListTable(QTableWidget):
     def __init__(self):
         super().__init__()
 
-        self.setColumnCount(6)
+        self.setColumnCount(7)
         self.setHorizontalHeaderLabels([
             "Filename",
             "Current media Date",
             "Detected Date",
             "Proposed Date",
+            "Proposed Name",
             "Status",
             "Action"
         ])
@@ -30,7 +31,7 @@ class FileListTable(QTableWidget):
 
         # Make Action column small
         self.horizontalHeader().setSectionResizeMode(
-            5, QHeaderView.ResizeMode.ResizeToContents
+            6, QHeaderView.ResizeMode.ResizeToContents
         )
 
         self.setSelectionBehavior(
@@ -85,7 +86,10 @@ class FileListTable(QTableWidget):
         prop_date = self._safe_datetime(prop_date) if prop_date else "Pending"
         self.setItem(row, 3, QTableWidgetItem(str(prop_date)))
 
-        self.setItem(row, 4, QTableWidgetItem(file_meta.status))
+        prop_name = file_meta.proposed_filename if file_meta.proposed_filename else ""
+        self.setItem(row, 4, QTableWidgetItem(prop_name))
+
+        self.setItem(row, 5, QTableWidgetItem(file_meta.status))
 
         # ---- Red Delete Button ----
         delete_btn = QPushButton("Delete")
@@ -110,7 +114,7 @@ class FileListTable(QTableWidget):
         """)
 
         delete_btn.clicked.connect(self._delete_button_clicked)
-        self.setCellWidget(row, 5, delete_btn)
+        self.setCellWidget(row, 6, delete_btn)
 
     # ---------------------------------
     # Update row
@@ -131,7 +135,11 @@ class FileListTable(QTableWidget):
             )
 
             self.setItem(row, 3, QTableWidgetItem(str(prop_date)))
-            self.setItem(row, 4, QTableWidgetItem(file_meta.status))
+            
+            prop_name = file_meta.proposed_filename if file_meta.proposed_filename else ""
+            self.setItem(row, 4, QTableWidgetItem(prop_name))
+            
+            self.setItem(row, 5, QTableWidgetItem(file_meta.status))
     # ---------------------------------
     # Handle delete button click
     # ---------------------------------

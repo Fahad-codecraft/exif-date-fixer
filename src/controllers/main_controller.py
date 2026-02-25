@@ -73,9 +73,10 @@ class MainController:
             self.view.progress_bar.setVisible(True)
             self.view.progress_bar.setMaximum(len(self.files_metadata))
             
+            rules = self.view.settings_panel.get_settings()
             processed_count = 0
             for i, meta in enumerate(self.files_metadata):
-                if self.processor.process_file(meta):
+                if self.processor.process_file(meta, rules):
                     processed_count += 1
                 self.view.file_table.update_row(i, meta)
                 self.view.progress_bar.setValue(i + 1)

@@ -3,6 +3,7 @@ from ..utils.exif_handler import ExifHandler
 from ..utils.filename_parser import FilenameParser
 from ..models.metadata_model import FileMetadata
 import os
+import shutil
 
 
 class ProcessingController:
@@ -60,9 +61,28 @@ class ProcessingController:
             proposed += timedelta(hours=rules["offset_hours"])
 
         file_meta.proposed_date = proposed
+        
+        if rules.get("enable_rename") and proposed:
+            date_str = proposed.strftime(self._get_strftime_format(rules.get("date_format", "YYYYMMDD_HHMMSS")))
+            prefix = rules.get("prefix", "")
+            suffix = rules.get("suffix", "")
+            new_name = f"{prefix}{date_str}{suffix}{file_meta.extension}"
+            file_meta.proposed_filename = new_name
+        else:
+            file_meta.proposed_filename = None
+
         return proposed
 
-    def process_file(self, file_meta: FileMetadata, dry_run=False) -> bool:
+    def _get_strftime_format(self, format_str: str) -> str:
+        mapping = {
+            "YYYYMMDD_HHMMSS": "%Y%m%d_%H%M%S",
+            "YYYY-MM-DD_HH-MM-SS": "%Y-%m-%d_%H-%M-%S",
+            "YYYYMMDD": "%Y%m%d",
+            "YYYY-MM-DD": "%Y-%m-%d"
+        }
+        return mapping.get(format_str, "%Y%m%d_%H%M%S")
+
+    def process_file(self, file_meta: FileMetadata, rules: dict, dry_run=False) -> bool:
         if not file_meta.proposed_date:
             file_meta.status = "Skipped"
             file_meta.message = "No proposed date"
@@ -72,6 +92,28 @@ class ProcessingController:
             file_meta.status = "Dry Run"
             file_meta.message = f"Would set date to {file_meta.proposed_date}"
             return True
+
+        original_path = file_meta.file_path
+        target_dir = rules.get("output_dir")
+        if not target_dir:
+            target_dir = os.path.dirname(original_path)
+            
+        target_name = file_meta.proposed_filename if file_meta.proposed_filename else file_meta.filename
+        target_path = os.path.join(target_dir, target_name)
+
+        if target_path != original_path:
+            try:
+                if rules.get("output_dir"):
+                    shutil.copy2(original_path, target_path)
+                else:
+                    os.rename(original_path, target_path)
+                
+                file_meta.file_path = target_path
+                file_meta.filename = target_name
+            except Exception as e:
+                file_meta.status = "Error"
+                file_meta.message = f"File operation failed: {str(e)}"
+                return False
 
         success = self.exif_handler.update_metadata(
             file_meta.file_path,
